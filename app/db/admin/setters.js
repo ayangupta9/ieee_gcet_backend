@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const serverconfig = require('../../config')
 const sqlPool = require('../main')
 const {
   getEventImportantDates,
@@ -11,18 +12,24 @@ function sqlQueryFunction (query) {
   return new Promise((resolve, reject) => {
     sqlPool.getConnection((err, connection) => {
       if (err) {
-        connection.release()
-        reject(err)
+        console.error(err)
+        connection.destroy()
+        reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
       }
 
       connection.query(query, async (err, insert_response) => {
         if (err) {
-          connection.release()
-          reject(err)
+          console.error(err)
+          connection.destroy()
+          reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
         }
 
-        console.log(insert_response)
-        resolve()
+        if (insert_response.changedRows > 0) {
+          console.log(insert_response)
+          resolve()
+        } else {
+          reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
+        }
       })
     })
   })
@@ -31,8 +38,12 @@ function sqlQueryFunction (query) {
 async function setEventImportantDates (newdates) {
   let query = 'update ?? set ?? = ?'
   query = mysql.format(query, ['events', 'dates', JSON.stringify(newdates)])
-  await sqlQueryFunction(query)
-  return await getEventImportantDates()
+  try {
+    await sqlQueryFunction(query)
+    return await getEventImportantDates()
+  } catch (returned_val) {
+    return returned_val
+  }
   //   console.log(query)
 }
 async function setEventContacts (newcontacts) {
@@ -42,8 +53,12 @@ async function setEventContacts (newcontacts) {
     'contacts',
     JSON.stringify(newcontacts)
   ])
-  await sqlQueryFunction(query)
-  return await getEventContacts()
+  try {
+    await sqlQueryFunction(query)
+    return await getEventContacts()
+  } catch (returned_val) {
+    return returned_val
+  }
   //   console.log(query)
 }
 async function setEventPaperDetails (newpaperdetails) {
@@ -53,8 +68,13 @@ async function setEventPaperDetails (newpaperdetails) {
     'paperdetails',
     JSON.stringify(newpaperdetails)
   ])
-  await sqlQueryFunction(query)
-  return await getEventPaperDetails()
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventPaperDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
 }
 async function setEventAccountDetails (newaccdetails) {
   let query = 'update ?? set ?? = ?'
@@ -63,8 +83,13 @@ async function setEventAccountDetails (newaccdetails) {
     'accdetails',
     JSON.stringify(newaccdetails)
   ])
-  await sqlQueryFunction(query)
-  return await getEventAccountDetails()
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventAccountDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
 }
 
 module.exports = {

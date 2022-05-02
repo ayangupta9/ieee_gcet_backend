@@ -1,24 +1,32 @@
+const serverconfig = require('../../config')
 const sqlPool = require('../main')
 
 function sqlQueryFunction (query) {
   return new Promise((resolve, reject) => {
     sqlPool.getConnection((err, connection) => {
       if (err) {
-        connection.release()
-        reject(err)
+        console.error(err)
+        connection.destroy()
+        reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
       }
 
       connection.query(query, (err, response) => {
         if (err) {
-          connection.release()
-          reject(err)
+          console.error(err)
+          connection.destroy()
+          reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
         }
 
         if (response.length > 0) {
           const data = response[0][Object.keys(response[0])[0]]
-          resolve(JSON.parse(data))
+          connection.destroy()
+          resolve({
+            status: 200,
+            data: JSON.parse(data)
+          })
         } else {
-          resolve(null)
+          connection.destroy()
+          reject(serverconfig.NOTFOUND_ERROR_REJECT_OBJECT)
         }
       })
     })
