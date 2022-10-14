@@ -5,19 +5,17 @@ function sqlQueryFunction (query) {
   return new Promise((resolve, reject) => {
     sqlPool.getConnection((err, connection) => {
       if (err) {
-        console.error(err)
         connection.destroy()
         reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
       }
 
       connection.query(query, (err, response) => {
         if (err) {
-          console.error(err)
           connection.destroy()
           reject(serverconfig.SERVER_ERROR_REJECT_OBJECT)
         }
 
-        if (response.length > 0) {
+        if (response !== null && response !== undefined && response.length > 0) {
           const data = response[0][Object.keys(response[0])[0]]
           connection.destroy()
           resolve({
@@ -53,19 +51,24 @@ async function getEventAccountDetails () {
   return await sqlQueryFunction(query)
 }
 
-function getSearchedPaper (searchedValue) {
-  //   return {
-  //     1: 'ABCD',
-  //     2: 'EFGH',
-  //     3: 'IJKL'
-  //   }
+async function getEventSpeakersDetails () {
+  let query = 'select speakers from events'
+  return await sqlQueryFunction(query)
+}
 
-  const val = Math.floor(Math.random() * 5) + 1
-  let returnval = {}
-  for (let index = 0; index < val; index++) {
-    returnval[index + 1] = `${index + 1} ${searchedValue}`
-  }
-  return returnval
+async function getEventOrgCommitteeDetails () {
+  let query = 'select org_committee from events'
+  return await sqlQueryFunction(query)
+}
+
+async function getEventTechPrgCommitteeDetails () {
+  let query = 'select tech_prg_committee from events'
+  return await sqlQueryFunction(query)
+}
+
+async function getEventAdvisoryBoardDetails () {
+  let query = 'select adv_board from events'
+  return await sqlQueryFunction(query)
 }
 
 module.exports = {
@@ -73,5 +76,17 @@ module.exports = {
   getEventContacts,
   getEventPaperDetails,
   getEventAccountDetails,
-  getSearchedPaper
+  getEventSpeakersDetails,
+  getEventOrgCommitteeDetails,
+  getEventTechPrgCommitteeDetails,
+  getEventAdvisoryBoardDetails
 }
+
+// function getSearchedPaper (searchedValue) {
+//   const val = Math.floor(Math.random() * 5) + 1
+//   let returnval = {}
+//   for (let index = 0; index < val; index++) {
+//     returnval[index + 1] = `${index + 1} ${searchedValue}`
+//   }
+//   return returnval
+// }

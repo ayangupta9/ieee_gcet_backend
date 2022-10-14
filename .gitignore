@@ -1,3 +1,5 @@
 node_modules/
-.env
+test/
+icac3n_speakers/
+*.env
 test.js

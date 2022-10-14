@@ -4,7 +4,7 @@ const ACCESS_TOKEN_SECRET = 'accesstokensecret'
 const SERVER_ERROR_REJECT_OBJECT = {
   bool: false,
   status: 500,
-  errorMessage: 'Internal server error Occured'
+  errorMessage: 'Internal server error occured'
 }
 
 const UNAUTHORIZED_ERROR_REJECT_OBJECT = {
@@ -38,8 +38,8 @@ const PAPERS_INACCESS_ERROR_REJECT_OBJECT = {
 }
 
 const serverconfig = {
-  ADMIN_SECRET_KEY: ADMIN_SECRET_KEY,
-  ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET,
+  ADMIN_SECRET_KEY,
+  ACCESS_TOKEN_SECRET,
   SERVER_ERROR_REJECT_OBJECT,
   UNAUTHORIZED_ERROR_REJECT_OBJECT,
   NOTFOUND_ERROR_REJECT_OBJECT,

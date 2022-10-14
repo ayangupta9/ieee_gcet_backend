@@ -5,7 +5,11 @@ const {
   getEventImportantDates,
   getEventContacts,
   getEventPaperDetails,
-  getEventAccountDetails
+  getEventAccountDetails,
+  getEventSpeakersDetails,
+  getEventOrgCommitteeDetails,
+  getEventTechPrgCommitteeDetails,
+  getEventAdvisoryBoardDetails
 } = require('./getters')
 
 function sqlQueryFunction (query) {
@@ -91,10 +95,75 @@ async function setEventAccountDetails (newaccdetails) {
     return returned_val
   }
 }
+async function setSpeakersDetails (new_speaker_details) {
+  let query = 'update ?? set ?? = ?'
+  query = mysql.format(query, [
+    'events',
+    'speakers',
+    JSON.stringify(new_speaker_details)
+  ])
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventSpeakersDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
+}
+async function setOrgCommitteeDetails (new_org_committee_details) {
+  let query = 'update ?? set ?? = ?'
+  query = mysql.format(query, [
+    'events',
+    'org_committee',
+    JSON.stringify(new_org_committee_details)
+  ])
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventOrgCommitteeDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
+}
+async function setTechPrgCommitteeDetails (new_tech_prg_committee_details) {
+  let query = 'update ?? set ?? = ?'
+  query = mysql.format(query, [
+    'events',
+    'tech_prg_committee',
+    JSON.stringify(new_tech_prg_committee_details)
+  ])
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventTechPrgCommitteeDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
+}
+
+async function setAdvisoryBoardDetails (new_tech_prg_committee_details) {
+  let query = 'update ?? set ?? = ?'
+  query = mysql.format(query, [
+    'events',
+    'tech_prg_committee',
+    JSON.stringify(new_tech_prg_committee_details)
+  ])
+
+  try {
+    await sqlQueryFunction(query)
+    return await getEventTechPrgCommitteeDetails()
+  } catch (returned_val) {
+    return returned_val
+  }
+}
 
 module.exports = {
   setEventImportantDates,
   setEventContacts,
   setEventPaperDetails,
-  setEventAccountDetails
+  setEventAccountDetails,
+  setSpeakersDetails,
+  setOrgCommitteeDetails,
+  setTechPrgCommitteeDetails,
+  setAdvisoryBoardDetails
 }
